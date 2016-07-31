@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="big5" ?>
+<root>
+    <File>    
+   
+        <Data Stock="1303"    Futures="CA"    Name="南亞"        />
+        <Data Stock="2002"    Futures="CB"    Name="中鋼"        />
+        <Data Stock="2303"    Futures="CC"    Name="聯電"        />
+        <Data Stock="2330"    Futures="CD"    Name="台積電"      />
+        <Data Stock="2881"    Futures="CE"    Name="富邦金"      />
+        <Data Stock="1301"    Futures="CF"    Name="台塑"        />
+        <Data Stock="2324"    Futures="CG"    Name="仁寶"        />
+        <Data Stock="2409"    Futures="CH"    Name="友達"        />
+        <Data Stock="2880"    Futures="CJ"    Name="華南金"      />
+        <Data Stock="2882"    Futures="CK"    Name="國泰金"      />
+        <Data Stock="2886"    Futures="CL"    Name="兆豐金"      />
+        <Data Stock="2887"    Futures="CM"    Name="台新金"      />
+        <Data Stock="2891"    Futures="CN"    Name="中信金"      />
+        <Data Stock="1216"    Futures="CQ"    Name="統一"        />
+        <Data Stock="1402"    Futures="CR"    Name="遠東新"      />
+        <Data Stock="1605"    Futures="CS"    Name="華新"        />
+        <Data Stock="2311"    Futures="CT"    Name="日月光"      />
+        <Data Stock="2323"    Futures="CU"    Name="中環"        />
+        <Data Stock="2325"    Futures="CV"    Name="矽品"        />
+        <Data Stock="2371"    Futures="CX"    Name="大同"        />
+        <Data Stock="2603"    Futures="CZ"    Name="長榮"        />
+        <Data Stock="2609"    Futures="DA"    Name="陽明"        />
+        <Data Stock="2801"    Futures="DC"    Name="彰銀"        />
+        <Data Stock="2888"    Futures="DD"    Name="新光金"      />
+        <Data Stock="2890"    Futures="DE"    Name="永豐金"      />
+        <Data Stock="1101"    Futures="DF"    Name="台泥"        />
+        <Data Stock="1326"    Futures="DG"    Name="台化"        />
+        <Data Stock="2317"    Futures="DH"    Name="鴻海"        />
+        <Data Stock="2357"    Futures="DJ"    Name="華碩"        />
+        <Data Stock="2382"    Futures="DK"    Name="廣達"        />
+        <Data Stock="2412"    Futures="DL"    Name="中華電"      />
+        <Data Stock="2884"    Futures="DN"    Name="玉山金"      />
+        <Data Stock="2885"    Futures="DO"    Name="元大金"      />
+        <Data Stock="2892"    Futures="DP"    Name="第一金"      />
+        <Data Stock="3481"    Futures="DQ"    Name="群創"        />
+        <Data Stock="2353"    Futures="DS"    Name="宏碁"        />        
+        <Data Stock="2448"    Futures="DU"    Name="晶電"        />
+        <Data Stock="2454"    Futures="DV"    Name="聯發科"      />
+        <Data Stock="2915"    Futures="DW"    Name="潤泰全"      />
+        <Data Stock="3231"    Futures="DX"    Name="緯創"        />
+        <Data Stock="1102"    Futures="DY"    Name="亞泥"        />
+        <Data Stock="1210"    Futures="DZ"    Name="大成"        />
+        <Data Stock="1227"    Futures="EA"    Name="佳格"        />
+        <Data Stock="1304"    Futures="EC"    Name="台聚"        />
+        <Data Stock="1308"    Futures="ED"    Name="亞聚"        />
+        <Data Stock="1312"    Futures="EE"    Name="國喬"        />
+        <Data Stock="1313"    Futures="EF"    Name="聯成"        />
+        <Data Stock="1314"    Futures="EG"    Name="中石化"      />
+        <Data Stock="1319"    Futures="EH"    Name="東陽"        />
+        <Data Stock="1409"    Futures="EI"    Name="新纖"        />
+        <Data Stock="1440"    Futures="EK"    Name="南紡"        />
+        <Data Stock="1444"    Futures="EL"    Name="力麗"        />
+        <Data Stock="1504"    Futures="EM"    Name="東元"        />
+        <Data Stock="1507"    Futures="EN"    Name="永大"        />
+        <Data Stock="1590"    Futures="EP"    Name="F-亞德"      />
+        <Data Stock="1702"    Futures="ER"    Name="南僑"        />
+        <Data Stock="1704"    Futures="ES"    Name="榮化"        />
+        <Data Stock="1710"    Futures="EU"    Name="東聯"        />
+        <Data Stock="1711"    Futures="EV"    Name="永光"        />
+        <Data Stock="1714"    Futures="EW"    Name="和桐"        />
+        <Data Stock="1718"    Futures="EY"    Name="中纖"        />
+        <Data Stock="1722"    Futures="EZ"    Name="台肥"        />
+        <Data Stock="1723"    Futures="FA"    Name="中碳"        />
+        <Data Stock="2006"    Futures="FB"    Name="東鋼"        />
+        <Data Stock="2049"    Futures="FF"    Name="上銀"        />
+        <Data Stock="2059"    Futures="FG"    Name="川湖"        />
+        <Data Stock="2101"    Futures="FH"    Name="南港"        />
+        <Data Stock="2103"    Futures="FI"    Name="台橡"        />
+        <Data Stock="2104"    Futures="FJ"    Name="中橡"        />
+        <Data Stock="2105"    Futures="FK"    Name="正新"        />
+        <Data Stock="2106"    Futures="FL"    Name="建大"        />
+        <Data Stock="2107"    Futures="FM"    Name="厚生"        />
+        <Data Stock="2201"    Futures="FN"    Name="裕隆"        />
+        <Data Stock="2204"    Futures="FO"    Name="中華"        />
+        <Data Stock="2206"    Futures="FP"    Name="三陽"        />
+        <Data Stock="2301"    Futures="FQ"    Name="光寶科"      />
+        <Data Stock="2308"    Futures="FR"    Name="台達電"      />
+        <Data Stock="2313"    Futures="FT"    Name="華通"        />
+        <Data Stock="2331"    Futures="FV"    Name="精英"        />
+        <Data Stock="2332"    Futures="FW"    Name="友訊"        />
+        <Data Stock="2340"    Futures="FY"    Name="光磊"        />
+        <Data Stock="2347"    Futures="GA"    Name="聯強"        />
+        <Data Stock="2354"    Futures="GC"    Name="鴻準"        />
+        <Data Stock="2362"    Futures="GE"    Name="藍天"        />
+        <Data Stock="2374"    Futures="GG"    Name="佳能"        />
+        <Data Stock="2376"    Futures="GH"    Name="技嘉"        />
+        <Data Stock="2377"    Futures="GI"    Name="微星"        />
+        <Data Stock="2379"    Futures="GJ"    Name="瑞昱"        />
+        <Data Stock="2385"    Futures="GK"    Name="群光"        />
+        <Data Stock="2392"    Futures="GL"    Name="正崴"        />
+        <Data Stock="2393"    Futures="GM"    Name="億光"        />
+        <Data Stock="2401"    Futures="GN"    Name="凌陽"        />
+        <Data Stock="2404"    Futures="GO"    Name="漢唐"        />
+        <Data Stock="2406"    Futures="GP"    Name="國碩"        />
+        <Data Stock="2430"    Futures="GQ"    Name="燦坤"        />
+        <Data Stock="2449"    Futures="GR"    Name="京元電"      />
+        <Data Stock="2450"    Futures="GS"    Name="神腦"        />
+        <Data Stock="2455"    Futures="GU"    Name="全新"        />
+        <Data Stock="2457"    Futures="GV"    Name="飛宏"        />
+        <Data Stock="2458"    Futures="GW"    Name="義隆"        />
+        <Data Stock="2474"    Futures="GX"    Name="可成"        />
+        <Data Stock="2485"    Futures="GZ"    Name="兆赫"        />
+        <Data Stock="2489"    Futures="HA"    Name="瑞軒"        />
+        <Data Stock="2498"    Futures="HC"    Name="宏達電"      />
+        <Data Stock="2499"    Futures="HD"    Name="東貝"        />
+        <Data Stock="2501"    Futures="HE"    Name="國建"        />
+        <Data Stock="2504"    Futures="HF"    Name="國產"        />
+        <Data Stock="2511"    Futures="HG"    Name="太子"        />
+        <Data Stock="2515"    Futures="HH"    Name="中工"        />
+        <Data Stock="2520"    Futures="HI"    Name="冠德"        />
+        <Data Stock="2534"    Futures="HJ"    Name="宏盛"        />
+        <Data Stock="2536"    Futures="HK"    Name="宏普"        />
+        <Data Stock="2542"    Futures="HL"    Name="興富發"      />
+        <Data Stock="2545"    Futures="HM"    Name="皇翔"        />
+        <Data Stock="2547"    Futures="HN"    Name="日勝生"      />
+        <Data Stock="2548"    Futures="HO"    Name="華固"        />
+        <Data Stock="2601"    Futures="HP"    Name="益航"        />
+        <Data Stock="2607"    Futures="HR"    Name="榮運"        />
+        <Data Stock="2618"    Futures="HS"    Name="長榮航"      />
+        <Data Stock="2704"    Futures="HT"    Name="國賓"        />
+        <Data Stock="2707"    Futures="HU"    Name="晶華"        />
+        <Data Stock="2809"    Futures="HV"    Name="京城銀"      />
+        <Data Stock="2812"    Futures="HW"    Name="台中銀"      />
+        <Data Stock="2820"    Futures="HX"    Name="華票"        />
+        <Data Stock="2823"    Futures="HY"    Name="中壽"        />
+        <Data Stock="2833"    Futures="HZ"    Name="台壽保"      />
+        <Data Stock="2834"    Futures="IA"    Name="臺企銀"      />
+        <Data Stock="2845"    Futures="IB"    Name="遠東銀"      />
+        <Data Stock="2847"    Futures="IC"    Name="大眾銀"      />
+        <Data Stock="2903"    Futures="IF"    Name="遠百"        />
+        <Data Stock="2913"    Futures="IH"    Name="農林"        />
+        <Data Stock="3006"    Futures="II"    Name="晶豪科"      />
+        <Data Stock="3008"    Futures="IJ"    Name="大立光"      />
+        <Data Stock="3019"    Futures="IM"    Name="亞光"        />
+        <Data Stock="3022"    Futures="IN"    Name="威強電"      />
+        <Data Stock="3034"    Futures="IO"    Name="聯詠"        />
+        <Data Stock="3035"    Futures="IP"    Name="智原"        />
+        <Data Stock="3036"    Futures="IQ"    Name="文曄"        />
+        <Data Stock="3037"    Futures="IR"    Name="欣興"        />
+        <Data Stock="3041"    Futures="IS"    Name="揚智"        />
+        <Data Stock="3042"    Futures="IT"    Name="晶技"        />
+        <Data Stock="3060"    Futures="IV"    Name="銘異"        />
+        <Data Stock="3061"    Futures="IW"    Name="璨圓"        />
+        <Data Stock="3189"    Futures="IX"    Name="景碩"        />
+        <Data Stock="3376"    Futures="IY"    Name="新日興"      />
+        <Data Stock="3380"    Futures="IZ"    Name="明泰"        />
+        <Data Stock="3443"    Futures="JB"    Name="創意"        />
+        <Data Stock="3504"    Futures="JC"    Name="揚明光"      />
+        <Data Stock="3514"    Futures="JD"    Name="昱晶"        />
+        <Data Stock="3519"    Futures="JE"    Name="綠能"        />
+        <Data Stock="3533"    Futures="JF"    Name="嘉澤"        />
+        <Data Stock="3561"    Futures="JG"    Name="昇陽科"      />
+        <Data Stock="3576"    Futures="JI"    Name="新日光"      />
+        <Data Stock="3622"    Futures="JL"    Name="洋華"        />
+        <Data Stock="3653"    Futures="JM"    Name="健策"        />
+        <Data Stock="3673"    Futures="JN"    Name="F-TPK"       />
+        <Data Stock="3702"    Futures="JP"    Name="大聯大"      />
+        <Data Stock="4725"    Futures="JR"    Name="信昌化"      />
+        <Data Stock="4938"    Futures="JS"    Name="和碩"        />
+        <Data Stock="5203"    Futures="JT"    Name="訊連"        />
+        <Data Stock="5534"    Futures="JW"    Name="長虹"        />
+        <Data Stock="6005"    Futures="JX"    Name="群益證"      />
+        <Data Stock="6120"    Futures="JY"    Name="輔祥"        />
+        <Data Stock="6153"    Futures="JZ"    Name="嘉聯益"      />
+        <Data Stock="6176"    Futures="KA"    Name="瑞儀"        />
+        <Data Stock="6213"    Futures="KB"    Name="聯茂"        />
+        <Data Stock="6239"    Futures="KC"    Name="力成"        />
+        <Data Stock="6271"    Futures="KD"    Name="同欣電"      />
+        <Data Stock="6278"    Futures="KE"    Name="台表科"      />
+        <Data Stock="6282"    Futures="KF"    Name="康舒"        />
+        <Data Stock="6285"    Futures="KG"    Name="啟碁"        />
+        <Data Stock="6286"    Futures="KH"    Name="立錡"        />
+        <Data Stock="8039"    Futures="KI"    Name="台虹"        />
+        <Data Stock="8163"    Futures="KK"    Name="達方"        />
+        <Data Stock="9904"    Futures="KL"    Name="寶成"        />
+        <Data Stock="9939"    Futures="KO"    Name="宏全"        />
+        <Data Stock="9945"    Futures="KP"    Name="潤泰新"      />
+        <Data Stock="1201"    Futures="KR"    Name="味全"        />
+        <Data Stock="1477"    Futures="KS"    Name="聚陽"        />
+        <Data Stock="1736"    Futures="KT"    Name="喬山"        />
+        <Data Stock="2328"    Futures="KW"    Name="廣宇"        />
+        <Data Stock="2905"    Futures="LA"    Name="三商行"      />
+        <Data Stock="3044"    Futures="LB"    Name="健鼎"        />
+        <Data Stock="3045"    Futures="LC"    Name="台灣大"      />
+        <Data Stock="3062"    Futures="LD"    Name="建漢"        />
+        <Data Stock="3406"    Futures="LE"    Name="玉晶光"      />
+        <Data Stock="3705"    Futures="LG"    Name="永信"        />
+        <Data Stock="5471"    Futures="LH"    Name="松翰"        />
+        <Data Stock="6269"    Futures="LI"    Name="台郡"        />
+        <Data Stock="8081"    Futures="LK"    Name="致新"        />
+        <Data Stock="9907"    Futures="LL"    Name="統一實"      />
+        <Data Stock="9914"    Futures="LM"    Name="美利達"      />
+        <Data Stock="9941"    Futures="LN"    Name="裕融"        />
+        <Data Stock="5880"    Futures="LO"    Name="合庫金"      />
+        <Data Stock="1789"    Futures="LP"    Name="神隆"        />
+        <Data Stock="2356"    Futures="LQ"    Name="英業達"      />
+        <Data Stock="2883"    Futures="LR"    Name="開發金"      />
+        <Data Stock="3149"    Futures="LS"    Name="正達"        />
+        <Data Stock="4904"    Futures="LT"    Name="遠傳"        />
+        <Data Stock="4958"    Futures="LU"    Name="F-臻鼎"      />
+        <Data Stock="5871"    Futures="LV"    Name="F-中租"      />
+        <Data Stock="1476"    Futures="LW"    Name="儒鴻"        />
+        <Data Stock="2327"    Futures="LX"    Name="國巨"        />
+        <Data Stock="8046"    Futures="LY"    Name="南電"        />
+        <Data Stock="8422"    Futures="LZ"    Name="可寧衛"      />
+        <Data Stock="1707"    Futures="MA"    Name="葡萄王"      />
+        <Data Stock="2355"    Futures="MB"    Name="敬鵬"        />
+        <Data Stock="3698"    Futures="MC"    Name="隆達"        />
+        <Data Stock="4532"    Futures="MD"    Name="瑞智"        />
+        <Data Stock="4960"    Futures="ME"    Name="奇美材"      />
+        <Data Stock="1447"    Futures="MF"    Name="力鵬"        />
+        <Data Stock="1451"    Futures="MG"    Name="年興"        />
+        <Data Stock="1532"    Futures="MH"    Name="勤美"        />
+        <Data Stock="2062"    Futures="MI"    Name="橋椿"        />
+        <Data Stock="2360"    Futures="MJ"    Name="致茂"        />
+        <Data Stock="2439"    Futures="MK"    Name="美律"        />
+        <Data Stock="3454"    Futures="ML"    Name="晶睿"        />
+        <Data Stock="4164"    Futures="MM"    Name="承業醫"      />
+        <Data Stock="5007"    Futures="MN"    Name="三星"        />
+        <Data Stock="6206"    Futures="MO"    Name="飛捷"        />
+        <Data Stock="6214"    Futures="MP"    Name="精誠"        />
+        <Data Stock="6257"    Futures="MQ"    Name="矽格"        />
+        <Data Stock="6504"    Futures="MR"    Name="南六"        />
+        <Data Stock="6605"    Futures="MU"    Name="帝寶"        />
+        <Data Stock="9938"    Futures="MV"    Name="百和"        />
+        <Data Stock="3682"    Futures="MW"    Name="亞太電"      />
+        <Data Stock="1565"    Futures="MY"    Name="精華"        />
+        <Data Stock="1785"    Futures="MZ"    Name="光洋科"      />
+        <Data Stock="3105"    Futures="NA"    Name="穩懋"        />
+        <Data Stock="3152"    Futures="NB"    Name="璟德"        />
+        <Data Stock="3211"    Futures="NC"    Name="順達"        />
+        <Data Stock="3260"    Futures="ND"    Name="威剛"        />
+        <Data Stock="3264"    Futures="NE"    Name="欣銓"        />
+        <Data Stock="3658"    Futures="NF"    Name="漢微科"      />
+        <Data Stock="3691"    Futures="NG"    Name="碩禾"        />
+        <Data Stock="4105"    Futures="NH"    Name="東洋"        />
+        <Data Stock="4123"    Futures="NI"    Name="晟德"        />
+        <Data Stock="5009"    Futures="NJ"    Name="榮剛"        />
+        <Data Stock="5306"    Futures="NK"    Name="桂盟"        />
+        <Data Stock="5347"    Futures="NL"    Name="世界"        />
+        <Data Stock="5371"    Futures="NM"    Name="中光電"      />
+        <Data Stock="5478"    Futures="NN"    Name="智冠"        />
+        <Data Stock="5483"    Futures="NO"    Name="中美晶"      />
+        <Data Stock="5512"    Futures="NP"    Name="力麒"        />
+        <Data Stock="6121"    Futures="NQ"    Name="新普"        />
+        <Data Stock="6146"    Futures="NR"    Name="耕興"        />
+        <Data Stock="6147"    Futures="NS"    Name="頎邦"        />
+        <Data Stock="6244"    Futures="NT"    Name="茂迪"        />
+        <Data Stock="8044"    Futures="NU"    Name="網家"        />
+        <Data Stock="8069"    Futures="NV"    Name="元太"        />
+        <Data Stock="8299"    Futures="NW"    Name="群聯"        />
+        <Data Stock="8942"    Futures="NX"    Name="森鉅"        />
+        <Data Stock="0050"    Futures="NY"    Name="台灣50"      />
+        <Data Stock="0061"    Futures="NZ"    Name="寶滬深"      />
+        <Data Stock="006205"  Futures="OA"    Name="FB上証"      />
+
+    </File>
+</root>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
