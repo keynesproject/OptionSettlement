@@ -28,13 +28,13 @@ namespace OptionSettlement
         /// 結算價起算的起始時間
         /// </summary>
         private const string m_strAssignTimeStart = "12:30";
-        //private const string m_strAssignTimeStart = "23:46";
+        //private const string m_strAssignTimeStart = "23:38";
 
         /// <summary>
         /// 結算價起算的結束時間
         /// </summary>
         private const string m_strAssignTimeEnd = "13:25";
-        //private const string m_strAssignTimeEnd = "23:48";
+        //private const string m_strAssignTimeEnd = "23:40";
 
         /// <summary>
         /// 視窗底部狀態列
@@ -80,12 +80,14 @@ namespace OptionSettlement
             CreateStatusBar();
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private void FormMain_Shown(object sender, EventArgs e)
         {
-            //this.CreateProductDdeData();
+            SetStatusInformation("資料讀取中.....");
+
+            this.CreateProductDdeData();
         }
 
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             m_DdeClient.CloseDdeClient();
         }
@@ -126,10 +128,10 @@ namespace OptionSettlement
         /// <param name="Cell">要更改顏色的Cell</param>
         private void SetFontColor(string BaseValue, string CurrentValue, DataGridViewCell Cell)
         {
-            if (string.Compare(BaseValue, "null") == 0)
+            if (string.Compare(BaseValue, "null") == 0 || BaseValue.Length == 0 )
                 return;
 
-            if (string.Compare(CurrentValue, "null") == 0)
+            if (string.Compare(CurrentValue, "null") == 0 || CurrentValue.Length == 0 )
                 return;
 
             float Base = float.Parse(BaseValue);
@@ -149,6 +151,31 @@ namespace OptionSettlement
             }
         }
 
+        private bool CreateDdeLink( Dictionary<string, string> DicSymbol )
+        {
+            //建立DDE連線;//
+            if (m_DdeClient.CreateDdeClient("YES", "DQ", m_dicSymbol) == true)
+            {
+                //建立商品資料;//
+                this.CreateProductDgvData(ref m_DdeClient, m_dicSymbol);
+            }
+            else
+            {
+                //顯示DDE連線錯誤訊息;//
+                if (MessageBox.Show("無法連結 DDE Server, 請開啟 YesWin !", "無法連線",
+                    MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
+                {
+                    return CreateDdeLink(DicSymbol);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void CreateProductDdeData()
         {
             //讀取商品CVS資料;//
@@ -156,12 +183,8 @@ namespace OptionSettlement
             m_dicSymbol = DataImport.ImportCSV("./StockInfo.csv");
 
             //建立DDE連線;//
-            if (m_DdeClient.CreateDdeClient("YES", "DQ", m_dicSymbol) == true)
-            {
-                //建立商品資料;//
-                this.CreateProductDgvData(ref m_DdeClient, m_dicSymbol);
-            }
-
+            CreateDdeLink(m_dicSymbol);
+            
             DataImport = null;
         }
         
@@ -185,7 +208,7 @@ namespace OptionSettlement
                     Rows.Cells["DgvStockPrice"].Value = args[(int)DDEClient.ItemField.ePrice];
 
                     //設定字型顏色;//
-                    string PreviousPrice = args[(int)DDEClient.ItemField.ePreviousPrice];
+                    string PreviousPrice = args[(int)DDEClient.ItemField.eReference];
                     SetFontColor(PreviousPrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvStockPrice"]);
 
                     //計算套利價格;//
@@ -199,10 +222,10 @@ namespace OptionSettlement
                     Rows.Cells["DgvOptionSell"].Value = args[(int)DDEClient.ItemField.eAskPrice];
 
                     //設定字型顏色;//
-                    string PreviousPrice = args[(int)DDEClient.ItemField.ePreviousPrice];
-                    SetFontColor(PreviousPrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvOptionPrice"]);
-                    SetFontColor(PreviousPrice, args[(int)DDEClient.ItemField.eBidPrice], Rows.Cells["DgvOptionBuy"]);
-                    SetFontColor(PreviousPrice, args[(int)DDEClient.ItemField.eAskPrice], Rows.Cells["DgvOptionSell"]);
+                    string ReferencePrice = args[(int)DDEClient.ItemField.eReference];
+                    SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvOptionPrice"]);
+                    SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.eBidPrice], Rows.Cells["DgvOptionBuy"]);
+                    SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.eAskPrice], Rows.Cells["DgvOptionSell"]);
 
                     //計算套利價格;//
                     CaculateArbitrage(Rows);
@@ -246,16 +269,17 @@ namespace OptionSettlement
                 //DataGridView建立列的資料;//
                 string[] arrRowData =
                 {
-                    listStockData[(int)DDEClient.ItemField.eSymbol],
-                    listStockData[(int)DDEClient.ItemField.eName],
-                    listStockData[(int)DDEClient.ItemField.ePrice],
-                    listOptionData[(int)DDEClient.ItemField.eSymbol],
-                    listOptionData[(int)DDEClient.ItemField.eName],
-                    listOptionData[(int)DDEClient.ItemField.ePrice],
-                    listOptionData[(int)DDEClient.ItemField.eBidPrice],
-                    listOptionData[(int)DDEClient.ItemField.eAskPrice],
-                    "null",
-                    "0"
+                    listStockData[(int)DDEClient.ItemField.eSymbol],    //股票代號;//
+                    listStockData[(int)DDEClient.ItemField.eName],      //股票名稱;//
+                    listStockData[(int)DDEClient.ItemField.ePrice],     //股票成交價;//
+                    listOptionData[(int)DDEClient.ItemField.eSymbol],   //期貨代號;//
+                    listOptionData[(int)DDEClient.ItemField.eName],     //期貨名稱;//
+                    listOptionData[(int)DDEClient.ItemField.ePrice],    //期貨成交價;//
+                    listOptionData[(int)DDEClient.ItemField.eBidPrice], //期貨買價;//
+                    listOptionData[(int)DDEClient.ItemField.eAskPrice], //期貨賣價;//
+                    "null",                                             //預估結算價;//
+                    "0",                                                //賣出期貨買價價差;//
+                    "0"                                                 //買進期貨賣價價差;//
                 };
 
                 //增加一列資料,並取得Row的編號及Row資料;//
@@ -270,16 +294,13 @@ namespace OptionSettlement
                 Settlement StockSettlement = new Settlement(m_nSettlementTimes);
                 m_htStockSettlement.Add(listStockData[(int)DDEClient.ItemField.eSymbol], StockSettlement );
 
-                //設定顯示的字型顏色;//
-                //當數值比昨收價1.低  綠色;//
-                //           2.高  紅色;//
-                //           3.同  白色;//                            
-                string PreviousPrice = listStockData[(int)DDEClient.ItemField.ePreviousPrice];
-                SetFontColor(PreviousPrice, listStockData[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvStockPrice"]);
-                PreviousPrice = listOptionData[(int)DDEClient.ItemField.ePreviousPrice];
-                SetFontColor(PreviousPrice, listOptionData[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvOptionPrice"]);
-                SetFontColor(PreviousPrice, listOptionData[(int)DDEClient.ItemField.eBidPrice], Rows.Cells["DgvOptionBuy"]);
-                SetFontColor(PreviousPrice, listOptionData[(int)DDEClient.ItemField.eAskPrice], Rows.Cells["DgvOptionSell"]);
+                //設定顯示的字型顏色;//                    
+                string ReferencePrice = listStockData[(int)DDEClient.ItemField.eReference];
+                SetFontColor(ReferencePrice, listStockData[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvStockPrice"]);
+                ReferencePrice = listOptionData[(int)DDEClient.ItemField.eReference];
+                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvOptionPrice"]);
+                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.eBidPrice], Rows.Cells["DgvOptionBuy"]);
+                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.eAskPrice], Rows.Cells["DgvOptionSell"]);
 
                 //設定DDE更新資料的回Call Function;//
                 DdeClient.mEventDdeAdvice += DdeAdvice;
@@ -316,7 +337,7 @@ namespace OptionSettlement
                     break;
 
                 case 3:
-                    SetStatusInformation("已經過結束值間: " + m_strAssignTimeEnd);
+                    SetStatusInformation("已超過結束時間: " + m_strAssignTimeEnd);
                     break;
 
                 default:
@@ -424,10 +445,7 @@ namespace OptionSettlement
                     //開啟結算價計算;//
                     TimerSettlement.Enabled = true;
                     TimerSettlement.Start();
-
-                    //先直接執行第一次;//
-                    this.TimerSettlement_Tick(sender, e);
-
+                    
                     TimerCheck.Enabled = false;                                   
                 }
                 this.SetStatusInformation(nCheckTime);
@@ -451,22 +469,35 @@ namespace OptionSettlement
                 {
                     //取得列資訊;//
                     DataGridViewRow dgvRow = (DataGridViewRow)m_htProdoctRowsNo[strSymbol];
-
-                    //取得列上的股票成交價;//
-                    string strNewStockPrice = dgvRow.Cells["DgvStockPrice"].Value.ToString();
-
+                    
+                    //取得列上的股票及期貨成交價;//
+                    string strNewStockPrice = dgvRow.Cells["DgvStockPrice"].Value.ToString();                    
+                    
                     //設定新的成交價;//
-                    Settlement strStockSettlement = (Settlement)DE.Value;
-                    strStockSettlement.SetNewPrice(Convert.ToSingle(strNewStockPrice));
+                    Settlement StockSettlement = (Settlement)DE.Value;
+                    StockSettlement.SetNewPrice(Convert.ToSingle(strNewStockPrice));
 
                     //將結算價顯示在Row上;//
-                    string strNewSettlement = strStockSettlement.GetSettlement().ToString("f2");
+                    string strNewSettlement = StockSettlement.GetSettlement().ToString("f2");
                     dgvRow.Cells["DgvSettlement"].Value = strNewSettlement;
+                      
+                    // 買進期貨  公式 預估結算價-期貨賣價  (大於0的弄成紅色);//
+                    string strOptionPrice = dgvRow.Cells["DgvOptionSell"].Value.ToString();
+                    if (string.Compare(strOptionPrice, "null") != 0 || strOptionPrice.Length > 0 )
+                    {
+                        string strSpread = (Convert.ToSingle(strNewSettlement) - Convert.ToSingle(strOptionPrice)).ToString("f2");
+                        dgvRow.Cells["DgvBuySpread"].Value = strSpread;
+                        this.SetFontColor("0", strSpread, dgvRow.Cells["DgvBuySpread"]);
+                    }
 
-                    //計算價差;//
-                    string strOptionPrice = dgvRow.Cells["DgvOptionPrice"].Value.ToString();
-                    string strSpread = (Convert.ToSingle(strOptionPrice) - Convert.ToSingle(strNewStockPrice)).ToString("f2");
-                    dgvRow.Cells["DgvSpread"].Value = strSpread;
+                    // 賣出期貨  公式 期貨買價-預估成結算價  (大於0弄成紅色);//
+                    strOptionPrice = dgvRow.Cells["DgvOptionBuy"].Value.ToString();
+                    if (string.Compare(strOptionPrice, "null") != 0 || strOptionPrice.Length > 0 )
+                    {
+                        string strSpread = (Convert.ToSingle(strOptionPrice) - Convert.ToSingle(strNewSettlement)).ToString("f2");
+                        dgvRow.Cells["DgvSellSpread"].Value = strSpread;
+                        this.SetFontColor("0", strSpread, dgvRow.Cells["DgvSellSpread"]);
+                    }
                 }
             }
 
@@ -492,14 +523,15 @@ namespace OptionSettlement
         {          
             Dictionary<string, string> dicMyDic = new Dictionary<string, string>();
 
-            //MyDic.Add("SCN1.SIMEX", "OAF1");            
-            //MyDic.Add("OAF1", "SCN1.SIMEX");
+            //dicMyDic.Add("SCN1.SIMEX", "OAF1");            
+            //dicMyDic.Add("OAF1", "SCN1.SIMEX");
 
-            //MyDic.Add("YM1.CME", "OAF1");
+            dicMyDic.Add("YM1.CME", "OAF1");
             dicMyDic.Add("OAF1", "YM1.CME");
             dicMyDic.Add("2106", "FLF1");
+            dicMyDic.Add("2915", "DWF1");
 
-            if( m_DdeClient.CreateDdeClient("YES", "DQ", dicMyDic) == true )
+            if ( m_DdeClient.CreateDdeClient("YES", "DQ", dicMyDic) == true )
             {
                 //建立商品資料;//
                 this.CreateProductDgvData(ref m_DdeClient, dicMyDic);
@@ -536,5 +568,15 @@ namespace OptionSettlement
         {
             int nCheckTime = CheckOnTimeLine( m_strAssignTimeStart, m_strAssignTimeEnd );
         }
+
+        private void temiTestMessagebox_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("無法連結 DDE Server, 請開啟 YesWin !", "無法連線",
+                    MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
+            {
+                //按下Retry;//
+            }
+        }
+
     }
 }
