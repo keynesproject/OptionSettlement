@@ -28,7 +28,7 @@ namespace OptionSettlement
         /// 結算價起算的起始時間
         /// </summary>
         private const string m_strAssignTimeStart = "12:30";
-        //private const string m_strAssignTimeStart = "23:38";
+        //private const string m_strAssignTimeStart = "13:00";
 
         /// <summary>
         /// 結算價起算的結束時間
@@ -169,6 +169,7 @@ namespace OptionSettlement
                 }
                 else
                 {
+                    Application.Exit();
                     return false;
                 }
             }
@@ -469,13 +470,38 @@ namespace OptionSettlement
                 {
                     //取得列資訊;//
                     DataGridViewRow dgvRow = (DataGridViewRow)m_htProdoctRowsNo[strSymbol];
-                    
-                    //取得列上的股票及期貨成交價;//
-                    string strNewStockPrice = dgvRow.Cells["DgvStockPrice"].Value.ToString();                    
-                    
-                    //設定新的成交價;//
+
+                    //取得結算價計算物件;//
                     Settlement StockSettlement = (Settlement)DE.Value;
-                    StockSettlement.SetNewPrice(Convert.ToSingle(strNewStockPrice));
+
+                    //取得列上的股票及期貨成交價;//
+                    string strNewStockPrice = dgvRow.Cells["DgvStockPrice"].Value.ToString();
+                    if (string.Compare(strNewStockPrice, "null") == 0)
+                    {
+                        //設定新數值,表示讀取錯誤數值;//
+                        StockSettlement.SetNewPrice(-1);
+
+                        //設定結算價為錯誤數值;//
+                        dgvRow.Cells["DgvSettlement"].Value = "null";
+                        dgvRow.Cells["DgvBuySpread"].Value = "null";
+                        dgvRow.Cells["DgvSellSpread"].Value = "null";
+
+                        continue;
+                    }
+
+                    //設定新的成交價;//                    
+                    if( StockSettlement.SetNewPrice(Convert.ToSingle(strNewStockPrice)) == false)
+                    {
+                        //設定新數值,表示讀取錯誤數值;//
+                        StockSettlement.SetNewPrice(-1);
+
+                        //設定結算價為錯誤數值;//
+                        dgvRow.Cells["DgvSettlement"].Value = "null";
+                        dgvRow.Cells["DgvBuySpread"].Value = "null";
+                        dgvRow.Cells["DgvSellSpread"].Value = "null";
+
+                        continue;
+                    }
 
                     //將結算價顯示在Row上;//
                     string strNewSettlement = StockSettlement.GetSettlement().ToString("f2");
@@ -483,7 +509,7 @@ namespace OptionSettlement
                       
                     // 買進期貨  公式 預估結算價-期貨賣價  (大於0的弄成紅色);//
                     string strOptionPrice = dgvRow.Cells["DgvOptionSell"].Value.ToString();
-                    if (string.Compare(strOptionPrice, "null") != 0 || strOptionPrice.Length > 0 )
+                    if (string.Compare(strOptionPrice, "null") != 0 && strOptionPrice.Length > 0 )
                     {
                         string strSpread = (Convert.ToSingle(strNewSettlement) - Convert.ToSingle(strOptionPrice)).ToString("f2");
                         dgvRow.Cells["DgvBuySpread"].Value = strSpread;
@@ -492,7 +518,7 @@ namespace OptionSettlement
 
                     // 賣出期貨  公式 期貨買價-預估成結算價  (大於0弄成紅色);//
                     strOptionPrice = dgvRow.Cells["DgvOptionBuy"].Value.ToString();
-                    if (string.Compare(strOptionPrice, "null") != 0 || strOptionPrice.Length > 0 )
+                    if (string.Compare(strOptionPrice, "null") != 0 && strOptionPrice.Length > 0 )
                     {
                         string strSpread = (Convert.ToSingle(strOptionPrice) - Convert.ToSingle(strNewSettlement)).ToString("f2");
                         dgvRow.Cells["DgvSellSpread"].Value = strSpread;
