@@ -82,9 +82,11 @@ namespace OptionSettlement
 
         private void FormMain_Shown(object sender, EventArgs e)
         {
+            
             SetStatusInformation("資料讀取中.....");
 
             this.CreateProductDdeData();
+            
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -151,6 +153,11 @@ namespace OptionSettlement
             }
         }
 
+        /// <summary>
+        /// 建立DDE商品連結
+        /// </summary>
+        /// <param name="DicSymbol"></param>
+        /// <returns></returns>
         private bool CreateDdeLink( Dictionary<string, string> DicSymbol )
         {
             //建立DDE連線;//
@@ -177,6 +184,9 @@ namespace OptionSettlement
             return true;
         }
 
+        /// <summary>
+        /// 建立商品資訊
+        /// </summary>
         private void CreateProductDdeData()
         {
             //讀取商品CVS資料;//
@@ -343,7 +353,7 @@ namespace OptionSettlement
 
                 default:
                     break;
-            }            
+            }
         }
 
         /// <summary>
@@ -537,7 +547,85 @@ namespace OptionSettlement
                 //開啟時間檢查;//
                 TimerCheck.Enabled = true;
             }
+        }
 
+        /// <summary>
+        /// 股票及期貨資料輸出至檔案(CVS檔)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tsmiFileOutput_Click(object sender, EventArgs e)
+        {
+            //取得現在日期;//
+            DateTime dtTimeNow = DateTime.Now;
+            string strSaveFileName = dtTimeNow.Year.ToString();
+            if( dtTimeNow.Month < 10 )
+                strSaveFileName += "0" + dtTimeNow.Month.ToString();
+            else
+                strSaveFileName += dtTimeNow.Month.ToString();
+            if( dtTimeNow.Day < 10 )
+                strSaveFileName += "0" + dtTimeNow.Day.ToString();
+            else
+                strSaveFileName += dtTimeNow.Day.ToString();
+
+            //顯示檔案儲存的對話視窗;//
+            SaveFileDialog SaveDlg = new SaveFileDialog();
+            SaveDlg.Filter = "Comma-Separated Values|*.csv";
+            SaveDlg.Title = "Save an CSV File";
+            SaveDlg.FileName = strSaveFileName;
+
+            System.Windows.Forms.DialogResult eDlgResult;
+            eDlgResult = SaveDlg.ShowDialog();
+
+            // 當對話框按下存檔或是OK,及檔案名稱有寫的話;//
+            if (eDlgResult == System.Windows.Forms.DialogResult.OK
+                && SaveDlg.FileName != "")
+            {
+                if (SaveDlg.FilterIndex == 1)
+                {
+                    try
+                    {
+                        //開啟檔案;//
+                        System.IO.StreamWriter SW = new System.IO.StreamWriter(SaveDlg.FileName, false, Encoding.UTF8);
+                        
+                        //輸出標頭檔;//
+                        foreach (DataGridViewColumn dgvColumn in dgvInform.Columns)
+                            SW.Write(dgvColumn.HeaderText + ",");
+                        SW.WriteLine();
+
+                        //輸出每列資訊;//
+                        foreach (DataGridViewRow dgvRow in dgvInform.Rows)
+                        {
+                            for (int i = 0; i < dgvInform.ColumnCount; i++)
+                                SW.Write(dgvRow.Cells[i].Value + ",");
+                            SW.WriteLine();
+                        }
+                        
+                        //將緩衝當中的資料寫入到實體檔案中 並將檔案關閉釋放資源;//
+                        SW.Flush();
+                        SW.Close();
+
+                        SW = null;
+                    }
+                    catch( Exception E )
+                    {
+                        MessageBox.Show("其他程式正在使用" + strSaveFileName + ",請先關閉應用程式再重試!", "無法輸出檔案",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
+            }
+
+            SaveDlg = null;
+        }
+
+        /// <summary>
+        /// 結束程式
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tsmiFileExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         /// <summary>
@@ -590,11 +678,21 @@ namespace OptionSettlement
             string Str2 = Str1.Substring(0,a);
         }
 
+        /// <summary>
+        /// 測試現在時間是否在指定時間之內
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void temiTestTime_Click(object sender, EventArgs e)
         {
             int nCheckTime = CheckOnTimeLine( m_strAssignTimeStart, m_strAssignTimeEnd );
         }
 
+        /// <summary>
+        /// 測試MessageBox的按鈕類型
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void temiTestMessagebox_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("無法連結 DDE Server, 請開啟 YesWin !", "無法連線",
@@ -603,6 +701,5 @@ namespace OptionSettlement
                 //按下Retry;//
             }
         }
-
     }
 }

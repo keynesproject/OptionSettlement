@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvInform = new System.Windows.Forms.DataGridView();
             this.DgvStockSymbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DgvStockName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -50,17 +50,20 @@
             this.DgvSellSpread = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.msMenu = new System.Windows.Forms.MenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiFileOutput = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTest = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTestDDE = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTestLoadCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.temiTestStrSplit = new System.Windows.Forms.ToolStripMenuItem();
             this.temiTestTime = new System.Windows.Forms.ToolStripMenuItem();
             this.temiTestMessagebox = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.TimerStatusTime = new System.Windows.Forms.Timer(this.components);
             this.TimerCheck = new System.Windows.Forms.Timer(this.components);
             this.TimerSettlement = new System.Windows.Forms.Timer(this.components);
-            this.tsmiFileOutput = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiFileExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInform)).BeginInit();
             this.msMenu.SuspendLayout();
             this.SuspendLayout();
@@ -107,8 +110,8 @@
             // 
             // DgvStockPrice
             // 
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvStockPrice.DefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvStockPrice.DefaultCellStyle = dataGridViewCellStyle1;
             this.DgvStockPrice.HeaderText = "股票成交價";
             this.DgvStockPrice.MaxInputLength = 10;
             this.DgvStockPrice.Name = "DgvStockPrice";
@@ -132,8 +135,8 @@
             // 
             // DgvOptionPrice
             // 
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvOptionPrice.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvOptionPrice.DefaultCellStyle = dataGridViewCellStyle2;
             this.DgvOptionPrice.HeaderText = "期貨成交價";
             this.DgvOptionPrice.MaxInputLength = 10;
             this.DgvOptionPrice.Name = "DgvOptionPrice";
@@ -142,8 +145,8 @@
             // 
             // DgvOptionBuy
             // 
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvOptionBuy.DefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvOptionBuy.DefaultCellStyle = dataGridViewCellStyle3;
             this.DgvOptionBuy.HeaderText = "期貨買價";
             this.DgvOptionBuy.MaxInputLength = 10;
             this.DgvOptionBuy.Name = "DgvOptionBuy";
@@ -152,8 +155,8 @@
             // 
             // DgvOptionSell
             // 
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvOptionSell.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvOptionSell.DefaultCellStyle = dataGridViewCellStyle4;
             this.DgvOptionSell.HeaderText = "期貨賣價";
             this.DgvOptionSell.MaxInputLength = 10;
             this.DgvOptionSell.Name = "DgvOptionSell";
@@ -162,8 +165,8 @@
             // 
             // DgvSettlement
             // 
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvSettlement.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvSettlement.DefaultCellStyle = dataGridViewCellStyle5;
             this.DgvSettlement.HeaderText = "預估結算價";
             this.DgvSettlement.MaxInputLength = 10;
             this.DgvSettlement.Name = "DgvSettlement";
@@ -172,8 +175,8 @@
             // 
             // DgvBuySpread
             // 
-            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvBuySpread.DefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvBuySpread.DefaultCellStyle = dataGridViewCellStyle6;
             this.DgvBuySpread.HeaderText = "買進期貨";
             this.DgvBuySpread.MaxInputLength = 10;
             this.DgvBuySpread.Name = "DgvBuySpread";
@@ -182,8 +185,8 @@
             // 
             // DgvSellSpread
             // 
-            dataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DgvSellSpread.DefaultCellStyle = dataGridViewCellStyle28;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DgvSellSpread.DefaultCellStyle = dataGridViewCellStyle7;
             this.DgvSellSpread.HeaderText = "賣出期貨";
             this.DgvSellSpread.MaxInputLength = 10;
             this.DgvSellSpread.Name = "DgvSellSpread";
@@ -195,7 +198,7 @@
             this.msMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiFile,
             this.tsmiTest,
-            this.tsmiAbout});
+            this.tsmiHelp});
             this.msMenu.Location = new System.Drawing.Point(0, 0);
             this.msMenu.Name = "msMenu";
             this.msMenu.Size = new System.Drawing.Size(926, 24);
@@ -205,10 +208,19 @@
             // tsmiFile
             // 
             this.tsmiFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiFileOutput});
+            this.tsmiFileOutput,
+            this.toolStripSeparator1,
+            this.tsmiFileExit});
             this.tsmiFile.Name = "tsmiFile";
             this.tsmiFile.Size = new System.Drawing.Size(44, 20);
             this.tsmiFile.Text = "檔案";
+            // 
+            // tsmiFileOutput
+            // 
+            this.tsmiFileOutput.Name = "tsmiFileOutput";
+            this.tsmiFileOutput.Size = new System.Drawing.Size(152, 22);
+            this.tsmiFileOutput.Text = "輸出結果";
+            this.tsmiFileOutput.Click += new System.EventHandler(this.tsmiFileOutput_Click);
             // 
             // tsmiTest
             // 
@@ -257,11 +269,13 @@
             this.temiTestMessagebox.Text = "提示訊息";
             this.temiTestMessagebox.Click += new System.EventHandler(this.temiTestMessagebox_Click);
             // 
-            // tsmiAbout
+            // tsmiHelp
             // 
-            this.tsmiAbout.Name = "tsmiAbout";
-            this.tsmiAbout.Size = new System.Drawing.Size(44, 20);
-            this.tsmiAbout.Text = "關於";
+            this.tsmiHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiHelpAbout});
+            this.tsmiHelp.Name = "tsmiHelp";
+            this.tsmiHelp.Size = new System.Drawing.Size(44, 20);
+            this.tsmiHelp.Text = "說明";
             // 
             // TimerStatusTime
             // 
@@ -280,11 +294,23 @@
             this.TimerSettlement.Interval = 5000;
             this.TimerSettlement.Tick += new System.EventHandler(this.TimerSettlement_Tick);
             // 
-            // tsmiFileOutput
+            // toolStripSeparator1
             // 
-            this.tsmiFileOutput.Name = "tsmiFileOutput";
-            this.tsmiFileOutput.Size = new System.Drawing.Size(152, 22);
-            this.tsmiFileOutput.Text = "輸出結果";
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tsmiFileExit
+            // 
+            this.tsmiFileExit.Name = "tsmiFileExit";
+            this.tsmiFileExit.Size = new System.Drawing.Size(152, 22);
+            this.tsmiFileExit.Text = "結束";
+            this.tsmiFileExit.Click += new System.EventHandler(this.tsmiFileExit_Click);
+            // 
+            // tsmiHelpAbout
+            // 
+            this.tsmiHelpAbout.Name = "tsmiHelpAbout";
+            this.tsmiHelpAbout.Size = new System.Drawing.Size(152, 22);
+            this.tsmiHelpAbout.Text = "關於";
             // 
             // FormMain
             // 
@@ -315,7 +341,7 @@
         private System.Windows.Forms.MenuStrip msMenu;
         private System.Windows.Forms.ToolStripMenuItem tsmiFile;
         private System.Windows.Forms.ToolStripMenuItem tsmiTest;
-        private System.Windows.Forms.ToolStripMenuItem tsmiAbout;
+        private System.Windows.Forms.ToolStripMenuItem tsmiHelp;
         private System.Windows.Forms.ToolStripMenuItem tsmiTestDDE;
         private System.Windows.Forms.ToolStripMenuItem tsmiTestLoadCSV;
         private System.Windows.Forms.ToolStripMenuItem temiTestStrSplit;
@@ -336,6 +362,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DgvSellSpread;
         private System.Windows.Forms.ToolStripMenuItem temiTestMessagebox;
         private System.Windows.Forms.ToolStripMenuItem tsmiFileOutput;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiFileExit;
+        private System.Windows.Forms.ToolStripMenuItem tsmiHelpAbout;
     }
 }
 
