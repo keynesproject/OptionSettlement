@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 /*
- * 股期 12:30-13:25 661個  55分鐘+1 
- * 期貨  1:00~ 1:25 301個  
+ * 股票期或 12:30-13:25 661個  55分鐘+1 
+ * 指數期貨  1:00~ 1:25 301個  
  * 每5秒鐘搓合一次
  */
 
@@ -20,21 +20,96 @@ namespace OptionSettlement
     public partial class FormMain : Form
     {
         /// <summary>
-        /// 結算搓合數量
+        /// 
         /// </summary>
-        private const int m_nSettlementTimes = 661;
+        public enum DgvColumnCell
+        {
+            eSTOCK_SYMBOL = 0,        //股票代號;// 
+            eSTOCK_NAME,              //股票名稱;//
+            eSTOCK_PRICE,             //股票成交價;//
+            eOPTION_SYMBOL,           //期貨代號;//
+            eOPTION_NAME,             //期貨名稱;//
+            eOPTION_PRICE,            //期貨成交價;//
+            eOPTION_BUY,              //期貨買價;//
+            eOPTION_SELL,             //期貨賣價;//
+            eOPTION_VOLUME,           //期貨成交量;//
+            eOPTION_SETTLEMENT,       //預估結算價;//
+            eOPTION_PRE_BUY,          //掛買;//
+            eOPTION_PRE_SELL,         //掛賣;//
+            eOPTION_BUY_SPREAD,       //買進期貨;//
+            eOPTION_SELL_SPREAD       //賣出期貨;//
+        };
 
         /// <summary>
-        /// 結算價起算的起始時間
+        /// 股期結算 data gride view 的欄位名稱
         /// </summary>
-        private const string m_strAssignTimeStart = "12:30";
-        //private const string m_strAssignTimeStart = "13:00";
+        private static readonly string[] DgvCellNameStock =
+        {
+            "DgvSStockSymbol",
+            "DgvSStockName",
+            "DgvSStockPrice",
+            "DgvSOptionSymbol",
+            "DgvSOptionName",
+            "DgvSOptionPrice",
+            "DgvSOptionBuy",
+            "DgvSOptionSell",
+            "DgvSOptionVolume",
+            "DgvSSettlement",
+            "DgvSPreBuy",
+            "DgvSPreSell",
+            "DgvSBuySpread",
+            "DgvSSellSpread"
+        };
+
+        /// <summary>
+        /// 指數結算 data gride view 的欄位名稱
+        /// </summary>
+        private static readonly string[] DgvCellNameIndex =
+        {
+            "DgvIStockSymbol",
+            "DgvIStockName",
+            "DgvIStockPrice",
+            "DgvIOptionSymbol",
+            "DgvIOptionName",
+            "DgvIOptionPrice",
+            "DgvIOptionBuy",
+            "DgvIOptionSell",
+            "DgvIOptionVolume",
+            "DgvISettlement",
+            "DgvIPreBuy",
+            "DgvIPreSell",
+            "DgvIBuySpread",
+            "DgvISellSpread"
+        };
+
+        /// <summary>
+        /// 股期類結算搓合數量
+        /// </summary>
+        private const int m_nSettlementStockNums = 661;
+        //private const int m_nSettlementStockNums = 301;
+
+        /// <summary>
+        /// 指數類結算搓合數量
+        /// </summary>
+        private const int m_nSettlementIndexNums = 301;
+
+        /// <summary>
+        /// 股期結算價起算的起始時間
+        /// </summary>
+        private const string m_strAssignTimeStartStock = "12:30";
+        //private const string m_strAssignTimeStartStock = "11:30";
+
+        /// <summary>
+        /// 指數期貨結算價起算的起始時間
+        /// </summary>
+        private const string m_strAssignTimeStartIndex = "13:00";
+        //private const string m_strAssignTimeStartIndex = "11:30";
 
         /// <summary>
         /// 結算價起算的結束時間
         /// </summary>
         private const string m_strAssignTimeEnd = "13:25";
-        //private const string m_strAssignTimeEnd = "23:40";
+        //private const string m_strAssignTimeEnd = "13:30";
 
         /// <summary>
         /// 視窗底部狀態列
@@ -57,15 +132,20 @@ namespace OptionSettlement
         private DDEClient m_DdeClient = new DDEClient();
 
         /// <summary>
-        /// 成對商品代號,內容為[股票代號,對應股期代號]
+        /// 成對股票期貨商品代號,內容為[股期代號,對應股票代號,]
         /// </summary>
-        private Dictionary<string, string> m_dicSymbol;
+        private Dictionary<string, string> m_dicSymbolStock;
 
         /// <summary>
-        /// 紀錄以 股票或期貨代號 為 KEY, DataGridViewRow 為 Value 的表. 
-        /// [ (string)股票或期貨代號, DataGridViewRow ]
+        /// 成對指數期貨商品代號,內容為[指數期貨,對應指數代號]
         /// </summary>
-        private Hashtable m_htProdoctRowsNo = new Hashtable();
+        private Dictionary<string, string> m_dicSymbolIndex;
+
+        /// <summary>
+        /// 紀錄以 股票或期貨代號 為 KEY, List<DataGridViewRow> 為 Value 的表. 
+        /// [ (string)股票或期貨代號, List<DataGridViewRow> ]
+        /// </summary>
+        private Hashtable m_htProductRowsNo = new Hashtable();
         
         /// <summary>
         /// 紀錄以 股票代號 為 KEY, Settlement物件 為 Value 的表.
@@ -73,11 +153,76 @@ namespace OptionSettlement
         /// </summary>
         private Hashtable m_htStockSettlement = new Hashtable();
 
+        /// <summary>
+        /// 紀錄以 指數代號 為 KEY, Settlement物件 為 Value 的表.
+        /// [ (string)指數代號, Settlement ]
+        /// </summary>
+        private Hashtable m_htIndexSettlement = new Hashtable();
+
         public FormMain()
         {
             InitializeComponent();
 
             CreateStatusBar();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            this.dgvInform.SortCompare += new DataGridViewSortCompareEventHandler(this.dgvInformSortCompare);
+            this.dgvInformIndex.SortCompare += new DataGridViewSortCompareEventHandler(this.dgvInformSortCompare);
+        }
+
+        private void dgvInformSortCompare(object sender,DataGridViewSortCompareEventArgs e)
+        {
+            if (   e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eSTOCK_PRICE]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_PRICE]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_BUY]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_SELL]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_VOLUME]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_SETTLEMENT]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_PRE_BUY]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_PRE_SELL]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_BUY_SPREAD]
+                || e.Column.Name == DgvCellNameStock[(int)DgvColumnCell.eOPTION_SELL_SPREAD]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eSTOCK_PRICE]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_PRICE]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_BUY]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_SELL]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_VOLUME]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_SETTLEMENT]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_PRE_BUY]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_PRE_SELL]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_BUY_SPREAD]
+                || e.Column.Name == DgvCellNameIndex[(int)DgvColumnCell.eOPTION_SELL_SPREAD])
+            {
+                if(    e.CellValue1.ToString() == "null" 
+                    || e.CellValue2.ToString() == "null" )
+                {
+                    e.SortResult = 0;
+                }
+                else
+                {
+                    if (Convert.ToDouble(e.CellValue1) < Convert.ToDouble(e.CellValue2))
+                    {
+                        e.SortResult = -1;
+                    }
+                    else if (Convert.ToDouble(e.CellValue1) == Convert.ToDouble(e.CellValue2))
+                    {
+                        e.SortResult = 0;
+                    }
+                    else
+                    {
+                        e.SortResult = 1;
+                    }
+                }
+            }
+            else
+            {
+                // Try to sort based on the cells in the current column.
+                e.SortResult = System.String.Compare(e.CellValue1.ToString(), e.CellValue2.ToString());
+            }
+
+            e.Handled = true;
         }
 
         private void FormMain_Shown(object sender, EventArgs e)
@@ -158,13 +303,12 @@ namespace OptionSettlement
         /// </summary>
         /// <param name="DicSymbol"></param>
         /// <returns></returns>
-        private bool CreateDdeLink( Dictionary<string, string> DicSymbol )
+        private bool CreateDdeLink( Dictionary<string, string> DicSymbol, bool IsStock )
         {
             //建立DDE連線;//
-            if (m_DdeClient.CreateDdeClient("YES", "DQ", m_dicSymbol) == true)
+            if (m_DdeClient.CreateDdeClient("YES", "DQ", DicSymbol) == true)
             {
-                //建立商品資料;//
-                this.CreateProductDgvData(ref m_DdeClient, m_dicSymbol);
+                this.CreateProductStockDgvData(ref m_DdeClient, DicSymbol, IsStock);
             }
             else
             {
@@ -172,7 +316,7 @@ namespace OptionSettlement
                 if (MessageBox.Show("無法連結 DDE Server, 請開啟 YesWin !", "無法連線",
                     MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
                 {
-                    return CreateDdeLink(DicSymbol);
+                    return CreateDdeLink(DicSymbol, IsStock);
                 }
                 else
                 {
@@ -189,13 +333,21 @@ namespace OptionSettlement
         /// </summary>
         private void CreateProductDdeData()
         {
-            //讀取商品CVS資料;//
+            //讀取股期商品CVS資料;//
             DataImport DataImport = new DataImport();           
-            m_dicSymbol = DataImport.ImportCSV("./StockInfo.csv");
+            m_dicSymbolStock = DataImport.ImportStockCSV("./StockInfo.csv");
 
-            //建立DDE連線;//
-            CreateDdeLink(m_dicSymbol);
-            
+            //讀取指數商品CVS代號;//
+            m_dicSymbolIndex = DataImport.ImportIndexCSV("./IndexInfo.csv");
+
+            //建立股票期貨類的DDE連線;//
+            if (!CreateDdeLink(m_dicSymbolStock, true))
+                return;
+
+            //建立指數期貨類的DDE連線;//
+            if (!CreateDdeLink(m_dicSymbolIndex, false))
+                return;
+
             DataImport = null;
         }
         
@@ -208,75 +360,57 @@ namespace OptionSettlement
         {
             //取得商品代號;//
             string strSymbol = args[(int)DDEClient.ItemField.eSymbol];
-            if (m_htProdoctRowsNo.ContainsKey(strSymbol))
+            if (m_htProductRowsNo.ContainsKey(strSymbol))
             {
                 //取得更新資料所在的列編號;//
-                DataGridViewRow Rows = (DataGridViewRow)m_htProdoctRowsNo[strSymbol];
-                
-                if (string.Compare(Rows.Cells["DgvStockSymbol"].Value.ToString(), strSymbol) == 0)
+                List<DataGridViewRow> Product = (List<DataGridViewRow>)m_htProductRowsNo[strSymbol];
+                foreach (DataGridViewRow Rows in (List<DataGridViewRow>)m_htProductRowsNo[strSymbol])
                 {
-                    //表示股票的資料更新,只更新列表的股票成交價;//
-                    Rows.Cells["DgvStockPrice"].Value = args[(int)DDEClient.ItemField.ePrice];
+                    if (string.Compare(Rows.Cells[(int)DgvColumnCell.eSTOCK_SYMBOL].Value.ToString(), strSymbol) == 0)
+                    {
+                        //表示為股期的股票部分更新,只更新列表的股票成交價;//
+                        Rows.Cells[(int)DgvColumnCell.eSTOCK_PRICE].Value = args[(int)DDEClient.ItemField.ePrice];
 
-                    //設定字型顏色;//
-                    string PreviousPrice = args[(int)DDEClient.ItemField.eReference];
-                    SetFontColor(PreviousPrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvStockPrice"]);
+                        //設定字型顏色;//
+                        string PreviousPrice = args[(int)DDEClient.ItemField.eReference];
+                        SetFontColor(PreviousPrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells[(int)DgvColumnCell.eSTOCK_PRICE]);                        
+                    }
+                    else if (string.Compare(Rows.Cells[(int)DgvColumnCell.eOPTION_SYMBOL].Value.ToString(), strSymbol) == 0)
+                    {
+                        //表示為股期類的資料更新,更新列表的期貨成交價,買價,賣價,成交量;//
+                        Rows.Cells[(int)DgvColumnCell.eOPTION_PRICE].Value = args[(int)DDEClient.ItemField.ePrice];
+                        Rows.Cells[(int)DgvColumnCell.eOPTION_BUY].Value = args[(int)DDEClient.ItemField.eBidPrice];
+                        Rows.Cells[(int)DgvColumnCell.eOPTION_SELL].Value = args[(int)DDEClient.ItemField.eAskPrice];
+                        Rows.Cells[(int)DgvColumnCell.eOPTION_VOLUME].Value = args[(int)DDEClient.ItemField.eCumulativeVolume];
 
-                    //計算套利價格;//
-                    CaculateArbitrage(Rows);                    
-                }
-                else if (string.Compare(Rows.Cells["DgvOptionSymbol"].Value.ToString(), strSymbol) == 0)
-                {
-                    //表示期貨的資料更新,更新列表的期貨成交價,買價,賣價;//
-                    Rows.Cells["DgvOptionPrice"].Value = args[(int)DDEClient.ItemField.ePrice];
-                    Rows.Cells["DgvOptionBuy"].Value = args[(int)DDEClient.ItemField.eBidPrice];
-                    Rows.Cells["DgvOptionSell"].Value = args[(int)DDEClient.ItemField.eAskPrice];
-
-                    //設定字型顏色;//
-                    string ReferencePrice = args[(int)DDEClient.ItemField.eReference];
-                    SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvOptionPrice"]);
-                    SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.eBidPrice], Rows.Cells["DgvOptionBuy"]);
-                    SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.eAskPrice], Rows.Cells["DgvOptionSell"]);
-
-                    //計算套利價格;//
-                    CaculateArbitrage(Rows);
+                        //設定字型顏色;//
+                        string ReferencePrice = args[(int)DDEClient.ItemField.eReference];
+                        SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.ePrice], Rows.Cells[(int)DgvColumnCell.eOPTION_PRICE]);
+                        SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.eBidPrice], Rows.Cells[(int)DgvColumnCell.eOPTION_BUY]);
+                        SetFontColor(ReferencePrice, args[(int)DDEClient.ItemField.eAskPrice], Rows.Cells[(int)DgvColumnCell.eOPTION_SELL]);                        
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// 計算套利價格
-        /// </summary>
-        /// <param name="dgvRow">有更新資料的Row編號</param>
-        private void CaculateArbitrage( DataGridViewRow dgvRow )
-        {
-
-        }
-
-        /// <summary>
-        /// 建立商品資料表格
+        /// 建立股票期貨商品資料表格
         /// </summary>
         /// <param name="DdeClient"></param>
-        /// <param name="DicSymbol">成對商品代號[股票代號,對應股期代號]</param>
-        private void CreateProductDgvData( ref DDEClient DdeClient, Dictionary<string, string> DicSymbol )
+        /// <param name="DicSymbol">成對商品代號[股票期貨代號,對應股票代號]</param>
+        private void CreateProductStockDgvData( ref DDEClient DdeClient, Dictionary<string, string> DicSymbol, bool IsStock )
         {
             //建立商品資料;//
             foreach (KeyValuePair<string, string> Item in DicSymbol)
             {
                 //取得股票及期貨資料;//
-                List<string> listStockData = m_DdeClient.GetProductData(Item.Key);
-                List<string> listOptionData = m_DdeClient.GetProductData(Item.Value);
+                List<string> listStockData = m_DdeClient.GetProductData(Item.Value);
+                List<string> listOptionData = m_DdeClient.GetProductData(Item.Key);
 
                 //判斷有無取得資料;//
                 if (listStockData == null || listOptionData == null)
                     continue;
-
-                //判斷此資料是否已經設定過;//
-                if (m_htProdoctRowsNo.ContainsKey(listStockData[(int)DDEClient.ItemField.eSymbol]) == true)
-                    continue;
-                if (m_htProdoctRowsNo.ContainsKey(listOptionData[(int)DDEClient.ItemField.eSymbol]) == true)
-                    continue;
-
+                
                 //DataGridView建立列的資料;//
                 string[] arrRowData =
                 {
@@ -288,31 +422,78 @@ namespace OptionSettlement
                     listOptionData[(int)DDEClient.ItemField.ePrice],    //期貨成交價;//
                     listOptionData[(int)DDEClient.ItemField.eBidPrice], //期貨買價;//
                     listOptionData[(int)DDEClient.ItemField.eAskPrice], //期貨賣價;//
+                    listOptionData[(int)DDEClient.ItemField.eCumulativeVolume], //期貨成交交量;//
                     "null",                                             //預估結算價;//
+                    "0",                                                //掛買;//
+                    "0",                                                //掛賣;//
                     "0",                                                //賣出期貨買價價差;//
-                    "0"                                                 //買進期貨賣價價差;//
+                    "0"                                                 //買進期貨賣價價差;//                    
                 };
 
                 //增加一列資料,並取得Row的編號及Row資料;//
-                int RowIdX = dgvInform.Rows.Add(arrRowData);
-                DataGridViewRow Rows = dgvInform.Rows[RowIdX];
+                DataGridViewRow Rows;
+                if (IsStock)
+                {
+                    int RowIdX = dgvInform.Rows.Add(arrRowData);
+                    Rows = dgvInform.Rows[RowIdX];
+                }
+                else
+                {
+                    int RowIdX = dgvInformIndex.Rows.Add(arrRowData);
+                    Rows = dgvInformIndex.Rows[RowIdX];
+                }
 
-                //紀錄商品資料所在的Rows;//
-                m_htProdoctRowsNo.Add(listStockData[(int)DDEClient.ItemField.eSymbol], Rows);
-                m_htProdoctRowsNo.Add(listOptionData[(int)DDEClient.ItemField.eSymbol], Rows);
+                //判斷此資料是否已經設定過變更不同的增加方式;//
+                if ( m_htProductRowsNo.ContainsKey(listStockData[(int)DDEClient.ItemField.eSymbol]) == true )
+                {
+                    //紀錄商品資料所在的Rows;//
+                    ((List<DataGridViewRow>)m_htProductRowsNo[listStockData[(int)DDEClient.ItemField.eSymbol]]).Add(Rows);
+                }
+                else
+                {
+                    List<DataGridViewRow> RowLists = new List<DataGridViewRow>();
+                    RowLists.Add(Rows);
+                    m_htProductRowsNo.Add(listStockData[(int)DDEClient.ItemField.eSymbol], RowLists);
+                }
 
-                //新增股票的結算價計算物件;//
-                Settlement StockSettlement = new Settlement(m_nSettlementTimes);
-                m_htStockSettlement.Add(listStockData[(int)DDEClient.ItemField.eSymbol], StockSettlement );
+                if (m_htProductRowsNo.ContainsKey(listOptionData[(int)DDEClient.ItemField.eSymbol]) == true)
+                {
+                    //紀錄商品資料所在的Rows;//
+                    ((List<DataGridViewRow>)m_htProductRowsNo[listOptionData[(int)DDEClient.ItemField.eSymbol]]).Add(Rows);                    
+                }   
+                else
+                {
+                    List<DataGridViewRow> RowLists = new List<DataGridViewRow>();
+                    RowLists.Add(Rows);
+                    m_htProductRowsNo.Add(listOptionData[(int)DDEClient.ItemField.eSymbol], RowLists);
+                }
+                                
+                if (IsStock)
+                {
+                    //新增股票的結算價計算物件;//
+                    if (m_htStockSettlement.Contains(listStockData[(int)DDEClient.ItemField.eSymbol]) == false)
+                    {
+                        Settlement StockSettlement = new Settlement(m_nSettlementStockNums);
+                        m_htStockSettlement.Add(listStockData[(int)DDEClient.ItemField.eSymbol], StockSettlement);
+                    }
+                }
+                else
+                {
+                    //新增指數的結算價計算物件;//
+                    if (m_htIndexSettlement.Contains(listStockData[(int)DDEClient.ItemField.eSymbol]) == false)
+                    {
+                        Settlement StockSettlement = new Settlement(m_nSettlementIndexNums);
+                        m_htIndexSettlement.Add(listStockData[(int)DDEClient.ItemField.eSymbol], StockSettlement);
+                    }
+                }
 
-                //設定顯示的字型顏色;//                    
                 string ReferencePrice = listStockData[(int)DDEClient.ItemField.eReference];
-                SetFontColor(ReferencePrice, listStockData[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvStockPrice"]);
+                SetFontColor(ReferencePrice, listStockData[(int)DDEClient.ItemField.ePrice], Rows.Cells[(int)DgvColumnCell.eSTOCK_PRICE]);
                 ReferencePrice = listOptionData[(int)DDEClient.ItemField.eReference];
-                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.ePrice], Rows.Cells["DgvOptionPrice"]);
-                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.eBidPrice], Rows.Cells["DgvOptionBuy"]);
-                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.eAskPrice], Rows.Cells["DgvOptionSell"]);
-
+                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.ePrice], Rows.Cells[(int)DgvColumnCell.eOPTION_PRICE]);
+                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.eBidPrice], Rows.Cells[(int)DgvColumnCell.eOPTION_BUY]);
+                SetFontColor(ReferencePrice, listOptionData[(int)DDEClient.ItemField.eAskPrice], Rows.Cells[(int)DgvColumnCell.eOPTION_SELL]);
+                
                 //設定DDE更新資料的回Call Function;//
                 DdeClient.mEventDdeAdvice += DdeAdvice;
             }
@@ -336,19 +517,23 @@ namespace OptionSettlement
             switch(InformType)
             {
                 case 0:
-                    SetStatusInformation("未到指定時間: " + m_strAssignTimeStart );
+                    SetStatusInformation("未到指定時間: " + m_strAssignTimeStartStock );
                     break;
 
                 case 1:
-                    SetStatusInformation("已到指定時間: " + m_strAssignTimeStart + ", 開始計算結算價!");
+                    SetStatusInformation("已到指定時間: " + m_strAssignTimeStartStock + ", 開始計算股票期貨結算價!");
                     break;
 
                 case 2:
-                    SetStatusInformation("已超過指定時間: " + m_strAssignTimeStart);
+                    SetStatusInformation("已超過指定時間: " + m_strAssignTimeStartStock);
                     break;
 
                 case 3:
                     SetStatusInformation("已超過結束時間: " + m_strAssignTimeEnd);
+                    break;
+
+                case 4:
+                    SetStatusInformation("已到指定時間: " + m_strAssignTimeStartIndex + ", 開始計算股票期貨及指數期貨結算價!");
                     break;
 
                 default:
@@ -430,7 +615,7 @@ namespace OptionSettlement
         }
 
         /// <summary>
-        /// 每隔一秒更新一次時間
+        /// 每隔一秒更新一次時間，顯示於視窗右下角的資訊,並檢查時間是否開始計算結算資料
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -439,115 +624,178 @@ namespace OptionSettlement
             //更新時間資訊;//
             m_DatetimePanel.ToolTipText = "DateTime: " + System.DateTime.Now.ToString();
             m_DatetimePanel.Text = System.DateTime.Now.ToLongTimeString();
-        }
 
-        /// <summary>
-        /// 每隔1秒檢查一下現在時間,是否在12:30-1點25之間
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TimerCheck_Tick(object sender, EventArgs e)
-        {
-            if (TimerSettlement.Enabled == false)
+            //檢查時間是否在12:30-1點25之間;//
+            if (TimerSettlementStock.Enabled == false)
             {
-                int nCheckTime = CheckOnTimeLine(m_strAssignTimeStart, m_strAssignTimeEnd);                
+                int nCheckTime = CheckOnTimeLine(m_strAssignTimeStartStock, m_strAssignTimeEnd);
                 if (nCheckTime == 1)
                 {
                     //開啟結算價計算;//
-                    TimerSettlement.Enabled = true;
-                    TimerSettlement.Start();
-                    
-                    TimerCheck.Enabled = false;                                   
+                    TimerSettlementStock.Enabled = true;
+                    TimerSettlementStock.Start();
+
+                    this.SetStatusInformation(1);
                 }
-                this.SetStatusInformation(nCheckTime);
-            }    
+                else
+                {
+                    this.SetStatusInformation(nCheckTime);
+                }
+            }
+
+            //檢查時間是否在13:00-1點25之間;//
+            if (TimerSettlementIndex.Enabled == false)
+            {
+                int nCheckTime = CheckOnTimeLine(m_strAssignTimeStartIndex, m_strAssignTimeEnd);
+                if (nCheckTime == 1)
+                {
+                    //開啟結算價計算;//
+                    TimerSettlementIndex.Enabled = true;
+                    TimerSettlementIndex.Start();
+
+                    this.SetStatusInformation(4);
+                }
+                else
+                {
+                    if(TimerSettlementStock.Enabled == false)
+                        this.SetStatusInformation(nCheckTime);
+                }                
+            }
         }
 
         /// <summary>
-        /// 每隔5秒取得成交價,並計算結算價格後,顯示在列表上
+        /// 每隔5秒取得股票成交價,並計算結算價格後,顯示在列表上
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TimerSettlement_Tick(object sender, EventArgs e)
+        private void TimerSettlementStock_Tick(object sender, EventArgs e)
         {
-            //取得成交價,並計算結算價格;//
-            //m_htProdoctRowsNo;
-            //m_htStockSettlement;
-            foreach ( DictionaryEntry DE in m_htStockSettlement )
-            {
-                string strSymbol = DE.Key.ToString();
-                if(m_htProdoctRowsNo.ContainsKey(strSymbol))
-                {
-                    //取得列資訊;//
-                    DataGridViewRow dgvRow = (DataGridViewRow)m_htProdoctRowsNo[strSymbol];
-
-                    //取得結算價計算物件;//
-                    Settlement StockSettlement = (Settlement)DE.Value;
-
-                    //取得列上的股票及期貨成交價;//
-                    string strNewStockPrice = dgvRow.Cells["DgvStockPrice"].Value.ToString();
-                    if (string.Compare(strNewStockPrice, "null") == 0)
-                    {
-                        //設定新數值,表示讀取錯誤數值;//
-                        StockSettlement.SetNewPrice(-1);
-
-                        //設定結算價為錯誤數值;//
-                        dgvRow.Cells["DgvSettlement"].Value = "null";
-                        dgvRow.Cells["DgvBuySpread"].Value = "null";
-                        dgvRow.Cells["DgvSellSpread"].Value = "null";
-
-                        continue;
-                    }
-
-                    //設定新的成交價;//                    
-                    if( StockSettlement.SetNewPrice(Convert.ToSingle(strNewStockPrice)) == false)
-                    {
-                        //設定新數值,表示讀取錯誤數值;//
-                        StockSettlement.SetNewPrice(-1);
-
-                        //設定結算價為錯誤數值;//
-                        dgvRow.Cells["DgvSettlement"].Value = "null";
-                        dgvRow.Cells["DgvBuySpread"].Value = "null";
-                        dgvRow.Cells["DgvSellSpread"].Value = "null";
-
-                        continue;
-                    }
-
-                    //將結算價顯示在Row上;//
-                    string strNewSettlement = StockSettlement.GetSettlement().ToString("f2");
-                    dgvRow.Cells["DgvSettlement"].Value = strNewSettlement;
-                      
-                    // 買進期貨  公式 預估結算價-期貨賣價  (大於0的弄成紅色);//
-                    string strOptionPrice = dgvRow.Cells["DgvOptionSell"].Value.ToString();
-                    if (string.Compare(strOptionPrice, "null") != 0 && strOptionPrice.Length > 0 )
-                    {
-                        string strSpread = (Convert.ToSingle(strNewSettlement) - Convert.ToSingle(strOptionPrice)).ToString("f2");
-                        dgvRow.Cells["DgvBuySpread"].Value = strSpread;
-                        this.SetFontColor("0", strSpread, dgvRow.Cells["DgvBuySpread"]);
-                    }
-
-                    // 賣出期貨  公式 期貨買價-預估成結算價  (大於0弄成紅色);//
-                    strOptionPrice = dgvRow.Cells["DgvOptionBuy"].Value.ToString();
-                    if (string.Compare(strOptionPrice, "null") != 0 && strOptionPrice.Length > 0 )
-                    {
-                        string strSpread = (Convert.ToSingle(strOptionPrice) - Convert.ToSingle(strNewSettlement)).ToString("f2");
-                        dgvRow.Cells["DgvSellSpread"].Value = strSpread;
-                        this.SetFontColor("0", strSpread, dgvRow.Cells["DgvSellSpread"]);
-                    }
-                }
-            }
-
+            //計算股期結算價;//
+            CaculateSettlement(m_htStockSettlement);
+            
             //計算時間是否超過指定的結束時間;//
-            int nCheckTime = this.CheckOnTimeLine( m_strAssignTimeStart, m_strAssignTimeEnd );
+            int nCheckTime = this.CheckOnTimeLine( m_strAssignTimeStartStock, m_strAssignTimeEnd );
             if(nCheckTime == 3 )
             {
                 //關閉結算計時;//
-                TimerSettlement.Enabled = false;
-
-                //開啟時間檢查;//
-                TimerCheck.Enabled = true;
+                TimerSettlementStock.Enabled = false;
             }
         }
+
+        /// <summary>
+        /// 每隔5秒取得指數成交價,並計算結算價格後,顯示在列表上
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerSettlementIndex_Tick(object sender, EventArgs e)
+        {            
+            //計算指數結算價;//
+            CaculateSettlement(m_htIndexSettlement);
+
+            //計算時間是否超過指定的結束時間;//
+            int nCheckTime = this.CheckOnTimeLine(m_strAssignTimeStartIndex, m_strAssignTimeEnd);
+            if (nCheckTime == 3)
+            {
+                //關閉結算計時;//
+                TimerSettlementIndex.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// 計算結算價
+        /// </summary>
+        /// <param name="htSettlement"></param>
+        private void CaculateSettlement(Hashtable htSettlement)
+        {
+            //取得成交價,並計算結算價格;//
+            //m_htProductRowsNo;
+            //m_htStockSettlement;
+            //m_htIndexSettlement;
+            foreach (DictionaryEntry DE in htSettlement)
+            {
+                string strSymbol = DE.Key.ToString();
+                if (m_htProductRowsNo.ContainsKey(strSymbol))
+                {
+                    //1.取得結算價計算物件;//
+                    Settlement StockSettlement = (Settlement)DE.Value;
+
+                    //2.取得列表或指數的成交價;//
+                    string strNewStockPrice;
+                    List<DataGridViewRow> RowList = (List<DataGridViewRow>)m_htProductRowsNo[strSymbol];
+                    strNewStockPrice = RowList[0].Cells[(int)DgvColumnCell.eSTOCK_PRICE].Value.ToString();
+
+                    //3.設定新成交價給 結算物件;//
+                    bool IsSetSettlement = true;
+                    if (   string.Compare(strNewStockPrice, "null") == 0
+                        || StockSettlement.SetNewPrice(Convert.ToSingle(strNewStockPrice)) == false )
+                    {
+                        IsSetSettlement = false;
+
+                        //設定新數值為-1,表示讀取錯誤數值;//
+                        StockSettlement.SetNewPrice(-1);
+                    }
+
+                    //4.設定新結算價及計算相關套利價格,並設定回列表;//                    
+                    foreach (DataGridViewRow dgvRow in RowList)
+                    {
+                        //檢查結算價有無設定成功;//
+                        if (!IsSetSettlement)
+                        {
+                            //設定結算價為錯誤數值;//
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_SETTLEMENT].Value = "null";
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_BUY_SPREAD].Value = "null";
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_SELL_SPREAD].Value = "null";
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_PRE_BUY].Value = "null";
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_PRE_SELL].Value = "null";
+
+                            continue;
+                        }
+
+                        //將結算價顯示在Row上;//
+                        string strNewSettlement = StockSettlement.GetSettlement().ToString("f2");
+                        dgvRow.Cells[(int)DgvColumnCell.eOPTION_SETTLEMENT].Value = strNewSettlement;
+
+                        //取得期貨五檔賣價,並計算套利的"買進期貨"及"掛賣";//
+                        string strOptionPrice = dgvRow.Cells[(int)DgvColumnCell.eOPTION_SELL].Value.ToString();
+                        if (string.Compare(strOptionPrice, "null") != 0 && strOptionPrice.Length > 0)
+                        {
+                            //買進期貨 公式:預估結算價-期貨賣價  (大於0的弄成紅色);//
+                            string strSpread = (Convert.ToSingle(strNewSettlement) - Convert.ToSingle(strOptionPrice)).ToString("f2");
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_BUY_SPREAD].Value = strSpread;
+                            this.SetFontColor("0", strSpread, dgvRow.Cells[(int)DgvColumnCell.eOPTION_BUY_SPREAD]);
+
+                            //掛賣 公式:期貨賣價 - 預估結算價 (大於0的弄成紅色);//
+                            strSpread = (Convert.ToSingle(strOptionPrice) - Convert.ToSingle(strNewSettlement)).ToString("f2");
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_PRE_SELL].Value = strSpread;
+                            this.SetFontColor("0", strSpread, dgvRow.Cells[(int)DgvColumnCell.eOPTION_PRE_SELL]);
+                        }
+
+                        //取得期貨五檔買價,並計算套利的"賣出期貨"及"掛買";//
+                        strOptionPrice = dgvRow.Cells[(int)DgvColumnCell.eOPTION_BUY].Value.ToString();
+                        if (string.Compare(strOptionPrice, "null") != 0 && strOptionPrice.Length > 0)
+                        {
+                            //賣出期貨 公式:期貨買價-預估成結算價  (大於0弄成紅色);//
+                            string strSpread = (Convert.ToSingle(strOptionPrice) - Convert.ToSingle(strNewSettlement)).ToString("f2");
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_SELL_SPREAD].Value = strSpread;
+                            this.SetFontColor("0", strSpread, dgvRow.Cells[(int)DgvColumnCell.eOPTION_SELL_SPREAD]);
+
+                            //掛買 公式:預估結算價 - 期貨買價  (大於0的弄成紅色);//
+                            strSpread = (Convert.ToSingle(strNewSettlement) - Convert.ToSingle(strOptionPrice)).ToString("f2");
+                            dgvRow.Cells[(int)DgvColumnCell.eOPTION_PRE_BUY].Value = strSpread;
+                            this.SetFontColor("0", strSpread, dgvRow.Cells[(int)DgvColumnCell.eOPTION_PRE_BUY]);
+                        }
+                    }
+                }
+            }
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        // 以下為測試
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// 股票及期貨資料輸出至檔案(CVS檔)
@@ -648,7 +896,7 @@ namespace OptionSettlement
             if ( m_DdeClient.CreateDdeClient("YES", "DQ", dicMyDic) == true )
             {
                 //建立商品資料;//
-                this.CreateProductDgvData(ref m_DdeClient, dicMyDic);
+                this.CreateProductStockDgvData(ref m_DdeClient, dicMyDic, true);
             }
 
             dicMyDic = null;
@@ -685,7 +933,7 @@ namespace OptionSettlement
         /// <param name="e"></param>
         private void temiTestTime_Click(object sender, EventArgs e)
         {
-            int nCheckTime = CheckOnTimeLine( m_strAssignTimeStart, m_strAssignTimeEnd );
+            int nCheckTime = CheckOnTimeLine( m_strAssignTimeStartStock, m_strAssignTimeEnd );
         }
 
         /// <summary>
